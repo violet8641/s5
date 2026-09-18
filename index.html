@@ -1,0 +1,1134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smartech</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --accent: #2563eb;
+            --light-bg: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            color: #334155;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 6px 6px 0 0;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Shop Header */
+        .shop-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .shop-info h1 { margin: 0 0 5px 0; color: var(--primary); font-size: 24px; }
+        .shop-info p { margin: 2px 0; font-size: 13px; color: #64748b; }
+        .header-logo { height: 60px; width: auto; object-fit: contain; display: block; }
+        
+        .estimate-title {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .estimate-title h2 { margin: 0; font-size: 20px; color: var(--accent); }
+
+        /* Customer Details Form */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: var(--light-bg);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-weight: bold; font-size: 12px; text-transform: uppercase; }
+        .form-group input { padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 14px; }
+
+        /* Search Dropdown Section */
+        .search-select-section {
+            margin-bottom: 20px;
+            background: #eff6ff;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px dashed #bfdbfe;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            position: relative;
+        }
+        .search-select-section label { font-weight: bold; font-size: 13px; color: var(--accent); white-space: nowrap; }
+        .search-select-section input { flex-grow: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 14px; }
+
+        /* Custom dropdown for YouTube-style search */
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 2px;
+        }
+        .search-dropdown.show {
+            display: block;
+        }
+        .search-dropdown-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .search-dropdown-item:hover {
+            background: #eff6ff;
+        }
+        .search-dropdown-item img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+        .search-dropdown-item .item-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .search-dropdown-item .item-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .search-dropdown-item .item-details {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .no-results {
+            padding: 10px 15px;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th, td { padding: 8px 5px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        th { background-color: var(--primary); color: white; font-size: 13px; }
+        td input { width: 90%; padding: 6px; border: 1px solid var(--border); border-radius: 4px; }
+        
+        /* Image dimensions */
+        .table-thumb { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; border: 1px solid var(--border); background-color: #fff; }
+        
+        /* Gap between image and text field */
+        .item-cell { display: flex; align-items: center; gap: 18px; }
+
+        /* Actions & Buttons */
+        .actions { display: flex; justify-content: flex-end; align-items: center; margin-top: 20px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
+        .btn:hover { opacity: 0.9; }
+        .btn-add { background: #10b981; color: white; }
+        .btn-print { background: var(--accent); color: white; }
+        .btn-show-all { background: #6366f1; color: white; }
+        .btn-delete { background: #ef4444; color: white; }
+
+        /* Catalog Toolbar & Badges */
+        .catalog-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--light-bg);
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            margin-bottom: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .badge-in-est {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-top: 4px;
+        }
+
+        /* JSON Tab Styles */
+        .json-card {
+            background: var(--light-bg);
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .json-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0 10px;
+            align-items: center;
+            justify-content: center;
+        }
+        .file-label {
+            background: var(--accent);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+            border: none;
+        }
+        .file-label:hover {
+            background: #1d4ed8;
+        }
+        .file-input {
+            display: none;
+        }
+        .json-hint {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 12px;
+            text-align: center;
+        }
+        .import-status {
+            margin-top: 15px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            display: none;
+        }
+        .import-status.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        .import-status.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .inventory-summary {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        /* Hide repeating border from screen view */
+        .print-border {
+            display: none;
+        }
+
+        /* ---------------------------------------------------- */
+        /* MOBILE RESPONSIVENESS (Applies only to screen view)  */
+        /* ---------------------------------------------------- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            .tab-btn {
+                flex: 1 1 45%;
+                text-align: center;
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+            .shop-header {
+                flex-direction: column-reverse;
+                text-align: center;
+                gap: 15px;
+            }
+            .header-logo {
+                margin: 0 auto;
+            }
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-select-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-select-section input {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .catalog-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .catalog-toolbar div {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                width: 100%;
+            }
+            .btn {
+                padding: 12px 14px;
+                width: 100%;
+                font-size: 14px;
+                box-sizing: border-box;
+            }
+            .json-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .file-label {
+                justify-content: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                width: 100%;
+                -webkit-overflow-scrolling: touch;
+            }
+            .item-cell {
+                gap: 10px;
+            }
+            .item-cell input {
+                min-width: 180px; 
+            }
+            td input {
+                min-width: 60px; 
+            }
+            .actions {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        /* PDF Printing Styles */
+        @page {
+            margin: 8mm;
+        }
+
+        @media print {
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: auto;
+            }
+            
+            body { 
+                background: none; 
+            }
+
+            .print-border {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 2px solid var(--primary);
+                opacity: 0.5;
+                box-sizing: border-box;
+                pointer-events: none;
+                z-index: 1000;
+            }
+
+            .container { 
+                box-shadow: none; 
+                border: none;
+                border-radius: 0;
+                padding: 10mm !important;
+                width: 100%; 
+                max-width: 100%;
+                height: auto;
+                overflow: visible;
+                box-sizing: border-box; 
+            }
+
+            .nav-tabs, .search-select-section, .no-print, .btn-delete { 
+                display: none !important; 
+            }
+            input { 
+                border: none !important; 
+                background: transparent !important; 
+                padding: 0 !important; 
+            }
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                display: none !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                width: 0 !important;
+                height: 0 !important;
+                position: absolute !important;
+                pointer-events: none !important;
+            }
+            .no-print-date {
+                display: none !important;
+            }
+            .print-date-text {
+                display: block !important;
+                font-size: 14px;
+                color: #334155;
+                padding: 0 !important;
+                margin: 0 !important;
+                line-height: 1.4;
+            }
+
+            .table-thumb {
+                object-fit: contain !important;
+            }
+
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            thead { display: table-header-group; }
+        }
+
+        .print-date-text {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="print-border"></div>
+
+<div class="container">
+    <!-- Top Navigation Tabs (Add from list tab hidden from menu) -->
+    <div class="nav-tabs no-print">
+        <button class="tab-btn active" id="btnTabEstimate" onclick="switchTab('estimateTab', this)">Home</button>
+        <button class="tab-btn" id="btnTabJson" onclick="switchTab('jsonTab', this)" style="display: none;">Manage</button>
+    </div>
+
+    <!-- TAB 1: ESTIMATE GENERATOR -->
+    <div id="estimateTab" class="tab-content active">
+        <div class="shop-header">
+            <div class="shop-info">
+                <h1>SmarTech Solutions</h1>
+                <p>Electrical, Plumbing, CCTV, Solar & Automation</p>
+                <p>Trippanachi | Ph: +91 8590 48 48 48</p>
+            </div>
+            <img src="kik.jpeg" alt="SmarTech Logo" class="header-logo">
+        </div>
+
+        <div class="estimate-title">
+            <h2>ESTIMATE - PLUMBING</h2>
+        </div>
+
+        <div class="details-grid">
+            <div class="form-group">
+                <label for="custName">Customer Name</label>
+                <input type="text" id="custName" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="estDate">Date</label>
+                <input type="date" id="estDate" class="no-print-date">
+                <span id="estDatePrint" class="print-date-text"></span>
+            </div>
+            <div class="form-group">
+                <label for="custPhone">Phone Number</label>
+                <input type="text" id="custPhone" placeholder="+91 00000 00000">
+            </div>
+            <div class="form-group">
+                <label for="estNo">Estimate No.</label>
+                <input type="text" id="estNo" value="EST-1001">
+            </div>
+        </div>
+
+        <!-- Search Bar with "Show All" and "+ Add Blank Line" -->
+        <div class="search-select-section no-print">
+            <label for="itemSearchInput">🔍 Search & Add Item:</label>
+            <div style="flex-grow: 1; position: relative;">
+                <input type="text" id="itemSearchInput" placeholder="Type item name to search..." autocomplete="off">
+                <div id="searchDropdown" class="search-dropdown"></div>
+            </div>
+            <button class="btn btn-show-all" onclick="goToCatalogTab()">Show All</button>
+            <button class="btn btn-add" onclick="addNewRow()">+ Add Blank Line</button>
+        </div>
+
+        <!-- Estimate Table -->
+        <table id="estimateTable">
+            <thead>
+                <tr>
+                    <th style="width: 8%;">SL NO</th>
+                    <th style="width: 47%;">ITEM DESCRIPTION</th>
+                    <th style="width: 15%;">QTY</th>
+                    <th style="width: 20%;">BRAND</th>
+                    <th class="no-print" style="width: 10%;">ACTION</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+
+        <div class="actions">
+            <button class="btn btn-print no-print" onclick="window.print()">Print / Save as PDF</button>
+        </div>
+    </div>
+
+    <!-- TAB 2: QUICK ADD / FULL LIST (Hidden from menu, accessible via "Show All") -->
+    <div id="catalogTab" class="tab-content">
+        <div class="catalog-toolbar no-print">
+            <div>
+                <strong style="font-size: 16px; color: var(--primary);">Add items from list</strong>
+                <span style="font-size: 13px; color: #64748b; display: block;"></span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-add" onclick="createNewEstimate()">Clear All</button>
+                <button class="btn btn-print" onclick="goToEstimateTab()">Back To Home</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 10%;">Image</th>
+                    <th style="width: 40%;">Item Name</th>
+                    <th style="width: 15%;">Default Qty</th>
+                    <th style="width: 15%;">Brand</th>
+                    <th style="width: 20%;" class="no-print">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="catalogTableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- TAB 3: FILE IMPORT (JSON only, no textarea visible) -->
+    <div id="jsonTab" class="tab-content">
+        <div style="margin-bottom: 20px; text-align: center;">
+            <h2 style="color: var(--primary); margin: 0 0 6px;">📦 Import Data</h2>
+            <p style="color: #64748b; font-size: 14px; margin: 0;"><strong></strong></p>
+        </div>
+
+        <div class="json-card">
+            <div style="font-size: 48px; margin-bottom: 10px;">📂</div>
+            <p style="margin: 0 0 6px; font-weight: bold; color: var(--primary); font-size: 16px;">Select a file</p>
+            <p style="margin: 0 0 20px; font-size: 13px; color: #64748b;"></p>
+
+            <div class="json-actions">
+                <label class="file-label" for="jsonFileInput">📁 Choose File</label>
+                <input type="file" id="jsonFileInput" class="file-input" accept=".json,application/json">
+            </div>
+
+            <div id="importStatus" class="import-status"></div>
+            <div id="inventorySummary" class="inventory-summary"></div>
+
+            <div class="json-hint">
+                <code></code><code></code><code></code><code></code><code></code>
+            </div>
+        </div>
+        
+        <div style="background: #f1f5f9; padding: 12px 16px; border-radius: 6px; border-left: 4px solid var(--accent);">
+            <p style="margin: 0; font-size: 13px; color: #1e293b;"><strong>ℹ️ Note:</strong></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const defaultPlaceholder = "white.png";
+
+    const defaultInventorySeed = [
+    
+    
+    
+       
+ 
+  { id: 125, name: "Concrete Nail", qty: 1, brand: "", img: "nails.jpg" },
+  { id: 124, name: "Concealed Cistern (Half Frame )", qty: 1, brand: "Geberit", img: "co.jpg" },
+  { id: 123, name: "Astral Bond Fit", qty: 1, brand: "Astral", img: "bondfit.jpg" },
+  { id: 122, name: "5'' Cutting Wheel", qty: 1, brand: "Awant", img: "cuttingwheel.jpg" },
+  { id: 121, name: "Tread Seal Tap ( Heavy )", qty: 1, brand: "Cooper", img: "tseal.jpg" },
+  { id: 120, name: "Star Bond 100 ML", qty: 1, brand: "", img: "starbond.png" },
+  { id: 119, name: "Shower Cock 3/4''", qty: 1, brand: "", img: "stopcock.jpg" },
+  { id: 118, name: "Divertor Inner Body ( High folw )", qty: 1, brand: "", img: "divertor.png" },
+  { id: 117, name: "3/4'' Clamp", qty: 1, brand: "", img: "clamps-.jpg" },
+  { id: 116, name: "3/4'' Tee", qty: 1, brand: "", img: "t..jpg" },
+  { id: 115, name: "3/4'' Lbow", qty: 1, brand: "", img: "l.jpeg" },
+  { id: 114, name: "3/4'' PVC 12.5 Kg", qty: 1, brand: "", img: "pvcpipe.jpg" },
+  { id: 113, name: "1''  Clamp ( Heavy )", qty: 1, brand: "", img: "clamps-.jpg" },
+  { id: 112, name: "1''  Projection Clamp", qty: 1, brand: "", img: "pclamb.jpg" },
+  { id: 111, name: "1'' Zoloto Valve", qty: 1, brand: "", img: "zoloto.jpg" },
+  { id: 110, name: "1'' Ball Valve", qty: 1, brand: "", img: "apex-ball-valve..jpg" },
+  { id: 109, name: "1'' - 1/2''  Point Lbow", qty: 1, brand: "", img: "plbow.webp" },
+  { id: 108, name: "1''   -   3/4''  Lbow", qty: 1, brand: "", img: "lbow.png" },
+  { id: 107, name: "1''   -   3/4''  Tee", qty: 1, brand: "", img: "t.png" },
+  { id: 106, name: "1''   -   3/4''  Reducer", qty: 1, brand: "", img: "reducer.jpg" },
+  { id: 105, name: "1'' Lbow", qty: 1, brand: "", img: "4lbow.jpg" },
+  { id: 104, name: "1'' Tee", qty: 1, brand: "", img: "tee.jpg" },
+  { id: 103, name: "1'' 45", qty: 1, brand: "", img: "45dside.webp" },
+  { id: 102, name: "1'' Short Bend", qty: 1, brand: "", img: "shortbend.jpg" },
+  { id: 101, name: "1'' PVC ISI 10 Kg", qty: 1, brand: "", img: "pvcpipe.jpg" },
+  { id: 100, name: "1'' PVC ISI 12.5 Kg", qty: 1, brand: "", img: "pvcpipe.jpg" },
+  { id: 99, name: "1'' PVC ISI 15 Kg", qty: 1, brand: "", img: "pvcpipe.jpg" },
+  { id: 98, name: "1 1/4'' Zoloto Valve", qty: 1, brand: "", img: "zoloto.jpg" },
+  { id: 97, name: "1 1/4'' Ball Valve", qty: 1, brand: "", img: "apex-ball-valve..jpg" },
+  { id: 96, name: "1 1/4''  Clamp ( Heavy )", qty: 1, brand: "", img: "clamps-.jpg" },
+  { id: 95, name: "1 1/4'' - 3/4'' Reducer", qty: 1, brand: "", img: "reducer.jpg" },
+  { id: 94, name: "1 1/4''  -  3/4''  Tee", qty: 1, brand: "", img: "t.png" },
+  { id: 93, name: "1 1/4''  -  1 ''  Tee", qty: 1, brand: "", img: "t.png" },
+  { id: 92, name: "1 1/4''  -  1 ''  Reducer", qty: 1, brand: "", img: "reducer.jpg" },
+  { id: 91, name: "1 1/4'' End Cap", qty: 1, brand: "", img: "endcap.jpg" },
+  { id: 90, name: "1 1/4'' FTA ( PN16 )", qty: 1, brand: "", img: "fta.jpg" },
+  { id: 89, name: "1 1/4'' MTA ( PN16 )", qty: 1, brand: "", img: "mta.jpg" },
+  { id: 88, name: "1 1/4'' Tee", qty: 1, brand: "", img: "tee.jpg" },
+  { id: 87, name: "1 1/4''    Y", qty: 1, brand: "", img: "y.webp" },
+  { id: 86, name: "1 1/4'' Lbow", qty: 1, brand: "", img: "4lbow.jpg" },
+  { id: 85, name: "1 1/4'' 45", qty: 1, brand: "", img: "45dside.webp" },
+  { id: 84, name: "1 1/4'' Short Bent", qty: 1, brand: "", img: "shortbend.jpg" },
+  { id: 83, name: "1 1/4'' PVC ISI 6 Kg", qty: 1, brand: "", img: "pvcpipe.jpg" },
+  { id: 82, name: "1/2'' Tank Connector Union", qty: 1, brand: "", img: "7-1.jpeg" },
+  { id: 81, name: "1/2'' NRV", qty: 1, brand: "", img: "brass-nrv-valve-.webp" },
+  { id: 80, name: "1/2'' Line Filter Brass", qty: 1, brand: "", img: "lfbrass.jpg" },
+  { id: 79, name: "1 1/2'' Line Filter ( Screen )", qty: 1, brand: "", img: "screen.jpg" },
+  { id: 78, name: "1 1/2'' Zoloto Valve", qty: 1, brand: "", img: "zoloto.jpg" },
+  { id: 77, name: "1 1/2''  Ball Valve", qty: 1, brand: "", img: "apex-ball-valve..jpg" },
+  { id: 76, name: "1 1/2'' - 3/4''    Tee", qty: 1, brand: "", img: "t.png" },
+  { id: 75, name: "1 1/2'' Door Lbow", qty: 1, brand: "", img: "dlbow.webp" },
+  { id: 74, name: "1 1/2'' - 1 1/4'' Reducer", qty: 1, brand: "", img: "reducer.jpg" },
+  { id: 73, name: "1 1/2'' - 1'' Reducer", qty: 1, brand: "", img: "reducer.jpg" },
+  { id: 72, name: "1 1/2'' - 1''", qty: 1, brand: "", img: "t.png" },
+  { id: 71, name: "1 1/2'' - 1 1/4'' Tee", qty: 1, brand: "", img: "t.png" },
+  { id: 70, name: "1 1/2'' - 1 1/4'' Bush", qty: 1, brand: "", img: "bush.jpeg" },
+  { id: 69, name: "1 1/2'' - 1 1/4'' Reducer", qty: 1, brand: "", img: "reducer.jpg" },
+  { id: 68, name: "1 1/2'' MTA ( PN 16 )", qty: 1, brand: "", img: "mta.jpg" },
+  { id: 67, name: "1 1/2'' FTA ( PN 16 )", qty: 1, brand: "", img: "fta.jpg" },
+  { id: 66, name: "1 1/2'' Door T", qty: 1, brand: "", img: "dt1s.jpg" },
+  { id: 65, name: "1 1/2'' End Cap", qty: 1, brand: "", img: "endcap.jpg" },
+  { id: 64, name: "1 1/2'' Tee", qty: 1, brand: "", img: "tee.jpg" },
+  { id: 63, name: "1 1/2'' L Bow", qty: 1, brand: "", img: "4lbow.jpg" },
+  { id: 62, name: "1 1/2'' Y", qty: 1, brand: "", img: "y.webp" },
+  { id: 61, name: "1 1/2'' 45", qty: 1, brand: "", img: "45dside.webp" },
+  { id: 60, name: "1 1/2'' Short Bent", qty: 1, brand: "", img: "shortbend.jpg" },
+  { id: 59, name: "1 1/2'' PVC ISI 6 Kg", qty: 1, brand: "", img: "pvcpipe.jpg" },
+  { id: 58, name: "2 1/2'' - Door L bow", qty: 1, brand: "", img: "dlbow.webp" },
+  { id: 57, name: "2 1/2'' - 1 1/2 Bush", qty: 1, brand: "", img: "bush.jpeg" },
+  { id: 56, name: "2 1/2'' - 1 1/2 Reducer", qty: 1, brand: "", img: "reducer.jpg" },
+  { id: 55, name: "2 1/2'' Ent Cap", qty: 1, brand: "", img: "endcap.jpg" },
+  { id: 54, name: "4'' Vent Cowl", qty: 1, brand: "", img: "cwl.jpg" },
+  { id: 53, name: "2 1/2'' Vent Cowl", qty: 1, brand: "", img: "cwl.jpg" },
+  { id: 52, name: "2 1/2'' End Cap", qty: 1, brand: "", img: "endcap.jpg" },
+  { id: 51, name: "2 1/2'' Clamp ( Heavy )", qty: 1, brand: "", img: "clamps-.jpg" },
+  { id: 50, name: "2 1/2'' -  2''  Reducer", qty: 1, brand: "", img: "reducer.jpg" },
+  { id: 49, name: "2 1/2'' - 2'' Bush", qty: 1, brand: "", img: "bush.jpeg" },
+  { id: 48, name: "2 1/2'' Tee", qty: 1, brand: "", img: "tee.jpg" },
+  { id: 47, name: "2 1/2''  L bow", qty: 1, brand: "", img: "4lbow.jpg" },
+  { id: 46, name: "2 1/2'' Short Bent", qty: 1, brand: "", img: "shortbend.jpg" },
+  { id: 45, name: "2 1/2''  Y", qty: 1, brand: "", img: "y.webp" },
+  { id: 44, name: "2 1/2'' Door L bow", qty: 1, brand: "", img: "dlbow.webp" },
+  { id: 43, name: "2 1/2'' Door T", qty: 1, brand: "", img: "dt1s.jpg" },
+  { id: 42, name: "2 1/2'' 45 Socket", qty: 1, brand: "", img: "45.jpg" },
+  { id: 41, name: "2 1/2'' 45 One Side", qty: 1, brand: "", img: "45oneside.jpg" },
+  { id: 40, name: "2 1/2'' PVC 4 Kg ISI", qty: 1, brand: "", img: "pvcpipe.jpg" },
+  { id: 39, name: "Multi Trap", qty: 1, brand: "", img: "multitrap.jpg" },
+  { id: 38, name: "4'' Door Lbow", qty: 1, brand: "", img: "dlbow.webp" },
+  { id: 37, name: "4'' Clamp ( Heavy)", qty: 1, brand: "", img: "clamps-.jpg" },
+  { id: 36, name: "4'' Lbow", qty: 1, brand: "", img: "4lbow.jpg" },
+  { id: 35, name: "4'' Tee", qty: 1, brand: "", img: "tee.jpg" },
+  { id: 34, name: "4'' Y", qty: 1, brand: "", img: "y.webp" },
+  { id: 33, name: "4'' End Cap", qty: 1, brand: "", img: "endcap.jpg" },
+  { id: 32, name: "4'' Door T Socket", qty: 1, brand: "", img: "dt1s.jpg" },
+  { id: 31, name: "4'' Door T One Side", qty: 1, brand: "", img: "4dtds.jpg" },
+  { id: 30, name: "4'' 45 Socket", qty: 1, brand: "", img: "45.jpg" },
+  { id: 29, name: "4'' 45 One Side", qty: 1, brand: "", img: "45oneside.jpg" },
+  { id: 28, name: "4'' Short Bent", qty: 1, brand: "", img: "shortbend.jpg" },
+  { id: 27, name: "4'' PVC 4 Kg ISI", qty: 1, brand: "", img: "pvcpipe.jpg" },
+  { id: 26, name: "PPR 3/4'' Coupler", qty: 1, brand: "", img: "coupler.jpg" },
+  { id: 25, name: "PPR 3/4'' Point L bow", qty: 1, brand: "", img: "plbow.jpg" },
+  { id: 24, name: "PPR 384'' Point Socket", qty: 1, brand: "", img: "psocket.jpg" },
+  { id: 23, name: "PPR 3/4'' - 1/2'' BT MTA", qty: 1, brand: "", img: "btmta.jpg" },
+  { id: 22, name: "PPR 3/4'' BT MTA", qty: 1, brand: "", img: "btmta.jpg" },
+  { id: 21, name: "PPR 3/4'' Cross Bent ( By pass )", qty: 1, brand: "", img: "cross.jpg" },
+  { id: 20, name: "PPR 3/4'' 45", qty: 1, brand: "", img: "45ppr.jpg" },
+  { id: 19, name: "PPR 3/4'' T", qty: 1, brand: "", img: "t.jpg" },
+  { id: 18, name: "PPR 3/4'' L bow", qty: 1, brand: "", img: "l.jpg" },
+  { id: 17, name: "PPR 3/4'' Pipe PN 20", qty: 1, brand: "", img: "ppr.jpg" },
+  { id: 16, name: "PPR 1'' - 1/2'' Point T", qty: 1, brand: "", img: "plbow0.jpg" },
+  { id: 15, name: "PPR 1'' - 1/2'' Point L bow", qty: 1, brand: "", img: "plbow.jpg" },
+  { id: 14, name: "PPR 1'' - 3/4'' Reducer", qty: 1, brand: "", img: "r.jpg" },
+  { id: 13, name: "PPR 1'' - 3/4''   T", qty: 1, brand: "", img: "rt.jpg" },
+  { id: 12, name: "PPR 1'' - 3/4'' L bow", qty: 1, brand: "", img: "rlbow.jpg" },
+  { id: 11, name: "PPR 1'' BT L bow", qty: 1, brand: "", img: "plbow.jpg" },
+  { id: 10, name: "PPR 1'' BT MTA", qty: 1, brand: "", img: "btmta.jpg" },
+  { id: 9, name: "PPR 1'' 45", qty: 1, brand: "", img: "45ppr.jpg" },
+  { id: 8, name: "PPR 1'' Ball Valve", qty: 1, brand: "", img: "pprv.jpg" },
+  { id: 7, name: "PPR 1'' End Cap", qty: 1, brand: "", img: "e.jpg" },
+  { id: 6, name: "PPR 1'' Coupler", qty: 1, brand: "", img: "coupler.jpg" },
+  { id: 5, name: "PPR 1''  T", qty: 1, brand: "", img: "1x1t.jpg" },
+  { id: 4, name: "PPR 1'' L bow", qty: 1, brand: "", img: "l.jpg" },
+  { id: 3, name: "PPR 1'' Pipe PN 20", qty: 1, brand: "", img: "ppr.jpg" }
+
+
+        
+        
+        
+        
+        
+    ];
+
+    let inventory = defaultInventorySeed.map(item => ({ ...item }));
+
+    const estDateInput = document.getElementById('estDate');
+    const estDatePrint = document.getElementById('estDatePrint');
+    const jsonFileInput = document.getElementById('jsonFileInput');
+    const importStatus = document.getElementById('importStatus');
+    const inventorySummary = document.getElementById('inventorySummary');
+
+    function formatDateForPrint(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr + 'T00:00:00');
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    function syncDatePrint() {
+        estDatePrint.textContent = formatDateForPrint(estDateInput.value);
+    }
+
+    estDateInput.valueAsDate = new Date();
+    syncDatePrint();
+    estDateInput.addEventListener('change', syncDatePrint);
+    estDateInput.addEventListener('input', syncDatePrint);
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        if (btn) btn.classList.add('active');
+        if (tabId === 'catalogTab') updateCatalogBadges();
+        if (tabId === 'jsonTab') updateImportSummary();
+    }
+
+    function goToEstimateTab() {
+        switchTab('estimateTab', document.getElementById('btnTabEstimate'));
+    }
+
+    function goToCatalogTab() {
+        // Catalog tab is hidden from menu but still functional via "Show All" button.
+        // We temporarily activate it without showing a nav button.
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('catalogTab').classList.add('active');
+        updateCatalogBadges();
+    }
+
+    /* Core Add to Estimate Function (Handles Deduplication) */
+    function addItemToEstimate(itemName, explicitQty = null) {
+        const item = inventory.find(i => i.name.toLowerCase() === itemName.toLowerCase());
+        if (!item) return;
+
+        const addQty = explicitQty !== null ? parseInt(explicitQty) : (parseInt(item.qty) || 1);
+        const rows = document.querySelectorAll('#tableBody tr');
+
+        if (rows.length === 1) {
+            const nameInput = rows[0].querySelector('.item-name');
+            if (nameInput && !nameInput.value.trim()) {
+                rows[0].remove();
+            }
+        }
+
+        let existingRow = null;
+        for (let row of document.querySelectorAll('#tableBody tr')) {
+            const nameInput = row.querySelector('.item-name');
+            if (nameInput && nameInput.value.trim().toLowerCase() === item.name.toLowerCase()) {
+                existingRow = row;
+                break;
+            }
+        }
+
+        if (existingRow) {
+            const qtyInput = existingRow.querySelector('.item-qty');
+            const currentQty = parseInt(qtyInput.value) || 0;
+            qtyInput.value = currentQty + addQty;
+            existingRow.style.backgroundColor = '#ecfdf5';
+            setTimeout(() => existingRow.style.backgroundColor = '', 300);
+        } else {
+            addRow(item.name, addQty, item.brand, item.img);
+        }
+
+        updateCatalogBadges();
+    }
+
+    function removeItemFromEstimate(itemName) {
+        const rows = document.querySelectorAll('#tableBody tr');
+        let removed = false;
+
+        for (let row of rows) {
+            const nameInput = row.querySelector('.item-name');
+            if (nameInput && nameInput.value.trim().toLowerCase() === itemName.toLowerCase()) {
+                row.remove();
+                removed = true;
+                break;
+            }
+        }
+
+        if (removed) {
+            updateIndexes();
+            updateCatalogBadges();
+        } else {
+            alert(`"${itemName}" is not currently in the estimate.`);
+        }
+    }
+
+    function getItemQtyInEstimate(itemName) {
+        const rows = document.querySelectorAll('#tableBody tr');
+        for (let row of rows) {
+            const nameInput = row.querySelector('.item-name');
+            if (nameInput && nameInput.value.trim().toLowerCase() === itemName.toLowerCase()) {
+                const qtyInput = row.querySelector('.item-qty');
+                return parseInt(qtyInput.value) || 0;
+            }
+        }
+        return 0;
+    }
+
+    function updateCatalogBadges() {
+        document.querySelectorAll('.badge-in-est').forEach(badge => {
+            const itemName = badge.getAttribute('data-item-name');
+            const qty = getItemQtyInEstimate(itemName);
+            if (qty > 0) {
+                badge.textContent = `In Estimate: ${qty}`;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        });
+    }
+
+    function createNewEstimate() {
+        const confirmNew = confirm("Start a brand new estimate? This will clear all items in the current estimate table.");
+        if (!confirmNew) return;
+
+        document.getElementById('tableBody').innerHTML = '';
+        addNewRow();
+
+        const estNoInput = document.getElementById('estNo');
+        const match = estNoInput.value.match(/^(.*?)(\d+)$/);
+        if (match) {
+            const prefix = match[1];
+            const nextNum = parseInt(match[2], 10) + 1;
+            estNoInput.value = prefix + String(nextNum).padStart(match[2].length, '0');
+        }
+
+        document.getElementById('custName').value = '';
+        document.getElementById('custPhone').value = '';
+        estDateInput.valueAsDate = new Date();
+        syncDatePrint();
+
+        updateCatalogBadges();
+        alert(`New estimate (${estNoInput.value}) initialized! Select items from the list below.`);
+    }
+
+    function handleDropdownSelect(value) {
+        addItemToEstimate(value);
+        document.getElementById('itemSearchInput').value = '';
+        document.getElementById('searchDropdown').classList.remove('show');
+    }
+
+    function handleInlineSelect(input) {
+        const val = input.value;
+        const selectedItem = inventory.find(item => item.name.toLowerCase() === val.toLowerCase());
+        
+        if (selectedItem) {
+            const row = input.closest('tr');
+            row.querySelector('.table-thumb').src = selectedItem.img;
+            row.querySelector('.item-qty').value = selectedItem.qty;
+            row.querySelector('.item-brand').value = selectedItem.brand || '';
+            updateCatalogBadges();
+        }
+    }
+
+    function renderCatalogTable() {
+        const tbody = document.getElementById('catalogTableBody');
+        tbody.innerHTML = '';
+
+        inventory.forEach(item => {
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td><img src="${item.img}" class="table-thumb" onerror="this.src='${defaultPlaceholder}'"></td>
+                <td>
+                    <strong>${item.name}</strong>
+                    <div><span class="badge-in-est" data-item-name="${item.name}" style="display:none;"></span></div>
+                </td>
+                <td>${item.qty}</td>
+                <td>${item.brand || '—'}</td>
+                <td class="no-print">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button class="btn btn-add btn-item-add" style="padding: 6px 12px; font-size: 13px;">+ Add</button>
+                        <button class="btn btn-delete btn-item-del" style="padding: 6px 12px; font-size: 13px;">Delete</button>
+                    </div>
+                </td>
+            `;
+
+            row.querySelector('.btn-item-add').addEventListener('click', () => addItemToEstimate(item.name));
+            row.querySelector('.btn-item-del').addEventListener('click', () => removeItemFromEstimate(item.name));
+
+            tbody.appendChild(row);
+        });
+
+        updateCatalogBadges();
+    }
+
+    function addRow(name = '', qty = 1, brand = '', imgUrl = defaultPlaceholder) {
+        const tbody = document.getElementById('tableBody');
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td class="row-index"></td>
+            <td>
+                <div class="item-cell">
+                    <img src="${imgUrl}" class="table-thumb" onerror="this.src='${defaultPlaceholder}'">
+                    <input type="text" value="${name}" class="item-name" placeholder="Type or select item..." onchange="handleInlineSelect(this)">
+                </div>
+            </td>
+            <td><input type="text" value="${qty}" class="item-qty" oninput="updateCatalogBadges()"></td>
+            <td><input type="text" value="${brand}" class="item-brand"></td>
+            <td class="no-print"><button class="btn-delete" onclick="removeRow(this)">X</button></td>
+        `;
+
+        tbody.appendChild(row);
+        updateIndexes();
+        updateCatalogBadges();
+    }
+
+    function addNewRow() {
+        addRow('', 1, '', defaultPlaceholder);
+    }
+
+    function removeRow(btn) {
+        btn.closest('tr').remove();
+        updateIndexes();
+        updateCatalogBadges();
+    }
+
+    function updateIndexes() {
+        document.querySelectorAll('#tableBody tr').forEach((row, index) => {
+            row.querySelector('.row-index').textContent = index + 1;
+        });
+    }
+
+    function setupSearchDropdown() {
+        const searchInput = document.getElementById('itemSearchInput');
+        const dropdown = document.getElementById('searchDropdown');
+        
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim().toLowerCase();
+            
+            if (!query) {
+                dropdown.classList.remove('show');
+                return;
+            }
+            
+            const matches = inventory.filter(item => 
+                item.name.toLowerCase().includes(query)
+            );
+            
+            if (matches.length === 0) {
+                dropdown.innerHTML = '<div class="no-results">No items found</div>';
+                dropdown.classList.add('show');
+                return;
+            }
+            
+            dropdown.innerHTML = matches.map(item => `
+                <div class="search-dropdown-item" data-item='${JSON.stringify(item)}'>
+                    <img src="${item.img}" alt="${item.name}" onerror="this.src='${defaultPlaceholder}'">
+                    <div class="item-info">
+                        <span class="item-name">${item.name}</span>
+                        <span class="item-details">Qty: ${item.qty} | Brand: ${item.brand || 'N/A'}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            dropdown.classList.add('show');
+            
+            dropdown.querySelectorAll('.search-dropdown-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const item = JSON.parse(this.dataset.item);
+                    handleDropdownSelect(item.name);
+                });
+            });
+        });
+        
+        searchInput.addEventListener('blur', function() {
+            setTimeout(() => {
+                dropdown.classList.remove('show');
+            }, 200);
+        });
+        
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim()) {
+                this.dispatchEvent(new Event('input'));
+            }
+        });
+        
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const firstItem = dropdown.querySelector('.search-dropdown-item');
+                if (firstItem) {
+                    const item = JSON.parse(firstItem.dataset.item);
+                    handleDropdownSelect(item.name);
+                }
+            } else if (e.key === 'Escape') {
+                dropdown.classList.remove('show');
+                this.blur();
+            }
+        });
+    }
+
+    // ========== JSON FILE IMPORT ONLY ==========
+    function externalJsonToInventory(jsonArray) {
+        if (!Array.isArray(jsonArray)) throw new Error("JSON root must be an array");
+        return jsonArray.map((entry, index) => {
+            const name = entry.item_name || entry.name || `Item ${index + 1}`;
+            const brand = entry.brand || "";
+            const qty = entry.quantity !== undefined ? entry.quantity : (entry.qty || 1);
+            const img = entry.item_image_filename || entry.img || defaultPlaceholder;
+            const id = entry.id !== undefined ? entry.id : index + 1;
+            return {
+                id: id,
+                name: name,
+                qty: qty,
+                brand: brand,
+                img: img
+            };
+        });
+    }
+
+    function handleFileImport(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Reset status
+        importStatus.className = 'import-status';
+        importStatus.textContent = '';
+        inventorySummary.textContent = '';
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const content = e.target.result;
+                const parsed = JSON.parse(content);
+                const newInventory = externalJsonToInventory(parsed);
+                inventory = newInventory;
+
+                // Re-render catalog
+                renderCatalogTable();
+                updateCatalogBadges();
+
+                // Show success
+                importStatus.className = 'import-status success';
+                importStatus.textContent = `✅ Successfully imported ${newInventory.length} items from "${file.name}".`;
+
+                // Update summary
+                const totalQty = newInventory.reduce((sum, i) => sum + (parseInt(i.qty) || 0), 0);
+                inventorySummary.innerHTML = `📦 <strong>${newInventory.length}</strong> unique items · Total default quantity: <strong>${totalQty}</strong>`;
+
+                // Reset search input to avoid stale results
+                document.getElementById('itemSearchInput').value = '';
+                document.getElementById('searchDropdown').classList.remove('show');
+
+            } catch (err) {
+                importStatus.className = 'import-status error';
+                importStatus.textContent = `❌ Failed to parse "${file.name}": ${err.message}`;
+            } finally {
+                jsonFileInput.value = '';
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function updateImportSummary() {
+        // Show current inventory summary if no status is displayed
+        if (!importStatus.textContent) {
+            const totalQty = inventory.reduce((sum, i) => sum + (parseInt(i.qty) || 0), 0);
+            inventorySummary.innerHTML = `Current inventory: <strong>${inventory.length}</strong> items · Total default quantity: <strong>${totalQty}</strong>`;
+        }
+    }
+
+    // Initialize
+    renderCatalogTable();
+    addNewRow();
+    setupSearchDropdown();
+
+    window.addEventListener('DOMContentLoaded', () => {
+        updateImportSummary();
+    });
+
+    jsonFileInput.addEventListener('change', handleFileImport);
+
+    // Expose functions to global
+    window.switchTab = switchTab;
+    window.goToEstimateTab = goToEstimateTab;
+    window.goToCatalogTab = goToCatalogTab;
+    window.addNewRow = addNewRow;
+    window.removeRow = removeRow;
+    window.handleInlineSelect = handleInlineSelect;
+    window.createNewEstimate = createNewEstimate;
+    window.updateCatalogBadges = updateCatalogBadges;
+</script>
+
+</body>
+</html>
