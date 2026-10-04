@@ -368,9 +368,9 @@
         /* PDF / PRINT STYLES — FIXED                                   */
         /* ============================================================ */
 
-        /* Increased from 8mm → 12mm gives the border room to breathe  */
         @page {
-            margin: 12mm;
+            margin: 10mm;
+            size: A4;
         }
 
         @media print {
@@ -384,35 +384,31 @@
                 background: none;
             }
 
-            /*
-             * FIX: Inset the border 2 mm from every edge of the content
-             * area so it never coincides with the very bottom of the page
-             * where rows would otherwise spill past it.
+            /* 
+             * FIX: Using `position: fixed` along with inset borders 
+             * ensures the boundary container wraps cleanly per page 
+             * without overlapping content rows.
              */
             .print-border {
                 display: block;
                 position: fixed;
-                top: 2mm;
-                left: 2mm;
-                right: 2mm;
-                bottom: 2mm;
+                top: 3mm;
+                left: 3mm;
+                right: 3mm;
+                bottom: 3mm;
                 border: 2px solid var(--primary);
-                opacity: 0.5;
+                opacity: 0.6;
                 box-sizing: border-box;
                 pointer-events: none;
                 z-index: 1000;
             }
 
-            /*
-             * FIX: Extra bottom padding stops the last visible row on
-             * each page from sitting right against the border edge.
-             */
             .container {
                 box-shadow: none;
                 border: none;
                 border-radius: 0;
-                padding: 10mm !important;
-                padding-bottom: 16mm !important;
+                padding: 8mm !important;
+                padding-bottom: 14mm !important;
                 width: 100%;
                 max-width: 100%;
                 height: auto;
@@ -461,11 +457,9 @@
                 page-break-inside: auto;
             }
 
-            /*
-             * FIX: Add the modern break-inside property alongside the
-             * legacy page-break-inside. Chrome respects break-inside
-             * much more reliably, preventing rows from being split
-             * across pages and appearing outside the border.
+            /* 
+             * FIX: Enforce break protection so rows never split mid-way
+             * or leak outside the printable frame borders.
              */
             tr {
                 page-break-inside: avoid;
@@ -1025,9 +1019,8 @@
                     </div>
                 `;
 
-                // Use direct event listeners instead of data attributes to handle quotes/special chars
                 itemEl.addEventListener('mousedown', function(e) {
-                    e.preventDefault(); // Prevents input blur from executing before click!
+                    e.preventDefault();
                     handleDropdownSelect(item.name);
                 });
 
@@ -1056,7 +1049,6 @@
             }
         });
 
-        // Hide dropdown when clicking anywhere outside
         document.addEventListener('click', function(e) {
             if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('show');
@@ -1121,7 +1113,6 @@
         }
     }
 
-    // Initialize DOM dependent items
     document.addEventListener('DOMContentLoaded', () => {
         renderCatalogTable();
         addNewRow();
@@ -1130,7 +1121,6 @@
         jsonFileInput.addEventListener('change', handleFileImport);
     });
 
-    // Global exposes
     window.switchTab = switchTab;
     window.goToEstimateTab = goToEstimateTab;
     window.goToCatalogTab = goToCatalogTab;
