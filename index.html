@@ -365,11 +365,11 @@
         }
 
         /* ============================================================ */
-        /* PDF / PRINT STYLES — FIXED                                   */
+        /* PDF / PRINT STYLES — FIXED HEADER BORDER OVERLAP             */
         /* ============================================================ */
 
         @page {
-            margin: 10mm;
+            margin: 12mm;
             size: A4;
         }
 
@@ -385,17 +385,16 @@
             }
 
             /* 
-             * FIX: Using `position: fixed` along with inset borders 
-             * ensures the boundary container wraps cleanly per page 
-             * without overlapping content rows.
+             * FIX: Inset the border slightly more from the page edge 
+             * so repeated headers on page 2+ stay safely inside.
              */
             .print-border {
                 display: block;
                 position: fixed;
-                top: 3mm;
-                left: 3mm;
-                right: 3mm;
-                bottom: 3mm;
+                top: 4mm;
+                left: 4mm;
+                right: 4mm;
+                bottom: 4mm;
                 border: 2px solid var(--primary);
                 opacity: 0.6;
                 box-sizing: border-box;
@@ -403,12 +402,18 @@
                 z-index: 1000;
             }
 
+            /* 
+             * FIX: Increased top padding inside the container so that 
+             * repeated <thead> blocks on pages 2+ have ample clearance 
+             * below the top page border.
+             */
             .container {
                 box-shadow: none;
                 border: none;
                 border-radius: 0;
-                padding: 8mm !important;
-                padding-bottom: 14mm !important;
+                padding: 12mm !important;
+                padding-top: 16mm !important;
+                padding-bottom: 16mm !important;
                 width: 100%;
                 max-width: 100%;
                 height: auto;
@@ -457,16 +462,16 @@
                 page-break-inside: auto;
             }
 
-            /* 
-             * FIX: Enforce break protection so rows never split mid-way
-             * or leak outside the printable frame borders.
-             */
             tr {
                 page-break-inside: avoid;
                 break-inside: avoid;
                 page-break-after: auto;
             }
 
+            /* 
+             * FIX: Ensures the repeated header group adds top spacing 
+             * relative to the layout flow on continuation pages.
+             */
             thead {
                 display: table-header-group;
             }
