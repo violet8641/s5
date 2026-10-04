@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -365,9 +364,13 @@
             }
         }
 
-        /* PDF Printing Styles */
+        /* ============================================================ */
+        /* PDF / PRINT STYLES — FIXED                                   */
+        /* ============================================================ */
+
+        /* Increased from 8mm → 12mm gives the border room to breathe  */
         @page {
-            margin: 8mm;
+            margin: 12mm;
         }
 
         @media print {
@@ -376,18 +379,23 @@
                 padding: 0;
                 height: auto;
             }
-            
-            body { 
-                background: none; 
+
+            body {
+                background: none;
             }
 
+            /*
+             * FIX: Inset the border 2 mm from every edge of the content
+             * area so it never coincides with the very bottom of the page
+             * where rows would otherwise spill past it.
+             */
             .print-border {
                 display: block;
                 position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
+                top: 2mm;
+                left: 2mm;
+                right: 2mm;
+                bottom: 2mm;
                 border: 2px solid var(--primary);
                 opacity: 0.5;
                 box-sizing: border-box;
@@ -395,26 +403,33 @@
                 z-index: 1000;
             }
 
-            .container { 
-                box-shadow: none; 
+            /*
+             * FIX: Extra bottom padding stops the last visible row on
+             * each page from sitting right against the border edge.
+             */
+            .container {
+                box-shadow: none;
                 border: none;
                 border-radius: 0;
                 padding: 10mm !important;
-                width: 100%; 
+                padding-bottom: 16mm !important;
+                width: 100%;
                 max-width: 100%;
                 height: auto;
                 overflow: visible;
-                box-sizing: border-box; 
+                box-sizing: border-box;
             }
 
-            .nav-tabs, .search-select-section, .no-print, .btn-delete { 
-                display: none !important; 
+            .nav-tabs, .search-select-section, .no-print, .btn-delete {
+                display: none !important;
             }
-            input { 
-                border: none !important; 
-                background: transparent !important; 
-                padding: 0 !important; 
+
+            input {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
             }
+
             input[type="date"]::-webkit-calendar-picker-indicator {
                 display: none !important;
                 opacity: 0 !important;
@@ -424,9 +439,11 @@
                 position: absolute !important;
                 pointer-events: none !important;
             }
+
             .no-print-date {
                 display: none !important;
             }
+
             .print-date-text {
                 display: block !important;
                 font-size: 14px;
@@ -440,9 +457,29 @@
                 object-fit: contain !important;
             }
 
-            table { page-break-inside: auto; }
-            tr { page-break-inside: avoid; page-break-after: auto; }
-            thead { display: table-header-group; }
+            table {
+                page-break-inside: auto;
+            }
+
+            /*
+             * FIX: Add the modern break-inside property alongside the
+             * legacy page-break-inside. Chrome respects break-inside
+             * much more reliably, preventing rows from being split
+             * across pages and appearing outside the border.
+             */
+            tr {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                page-break-after: auto;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
         }
 
         .print-date-text {
@@ -583,17 +620,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 <script>
     const defaultPlaceholder = "white.png";
@@ -1046,13 +1072,7 @@
             const qty = entry.quantity !== undefined ? entry.quantity : (entry.qty || 1);
             const img = entry.item_image_filename || entry.img || defaultPlaceholder;
             const id = entry.id !== undefined ? entry.id : index + 1;
-            return {
-                id: id,
-                name: name,
-                qty: qty,
-                brand: brand,
-                img: img
-            };
+            return { id, name, qty, brand, img };
         });
     }
 
@@ -1120,14 +1140,6 @@
     window.createNewEstimate = createNewEstimate;
     window.updateCatalogBadges = updateCatalogBadges;
 </script>
-
-
-
-
-
-
-
-
 
 </body>
 </html>
